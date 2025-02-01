@@ -1,68 +1,91 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, Image, TouchableOpacity } from 'react-native';
-import { useTheme } from '@react-navigation/native';
-import { auth, firestore } from '../services/firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import * as ImagePicker from 'expo-image-picker';
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Dimensions
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
-const ProfileScreen = ({ navigation }) => {
-  const { colors } = useTheme();
-  const [userData, setUserData] = useState({});
-  const [licensePhoto, setLicensePhoto] = useState(null);
+const { width, height } = Dimensions.get('window');
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const userDoc = await getDoc(doc(firestore, 'users', auth.currentUser.uid));
-      if (userDoc.exists()) {
-        setUserData(userDoc.data());
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setLicensePhoto(result.uri);
-      await updateDoc(doc(firestore, 'users', auth.currentUser.uid), {
-        licensePhoto: result.uri,
-        isVerified: false,
-      });
-    }
-  };
-
-  const handleLogout = () => {
-    auth.signOut().then(() => {
-      navigation.navigate('Login');
-    }).catch((error) => {
-      console.error(error);
-    });
+const ProfileScreen = () => {
+  const userDetails = {
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    phone: '+1 234 567 8900',
+    ridesOffered: 15,
+    ridesToken: 25
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.title, { color: colors.text }]}>User Profile</Text>
-      {userData.profilePicture && (
-        <Image source={{ uri: userData.profilePicture }} style={styles.profileImage} />
-      )}
-      <Text style={[styles.text, { color: colors.text }]}>Name: {userData.name}</Text>
-      <Text style={[styles.text, { color: colors.text }]}>Email: {userData.email}</Text>
-      <TouchableOpacity onPress={pickImage} style={styles.card}>
-        <Text style={[styles.cardText, { color: colors.text }]}>
-          {userData.licensePhoto ? 'Update Driver\'s License Photo' : 'Upload Driver\'s License Photo'}
-        </Text>
-        {userData.licensePhoto && (
-          <Image source={{ uri: userData.licensePhoto }} style={styles.licenseImage} />
-        )}
-      </TouchableOpacity>
-      <Button title="Logout" onPress={handleLogout} />
+    <View style={styles.container}>
+      <LinearGradient
+        colors={['#000000', '#1a1a1a']}
+        style={styles.gradient}
+      >
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.header}>
+            <View style={styles.profileImageContainer}>
+              <Image
+                source={{ uri: 'https://via.placeholder.com/150' }}
+                style={styles.profileImage}
+              />
+              <TouchableOpacity style={styles.editButton}>
+                <Ionicons name="camera" size={20} color="#ffffff" />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.name}>{userDetails.name}</Text>
+            <Text style={styles.email}>{userDetails.email}</Text>
+          </View>
+
+          <View style={styles.statsContainer}>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{userDetails.ridesOffered}</Text>
+              <Text style={styles.statLabel}>Rides Offered</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{userDetails.ridesToken}</Text>
+              <Text style={styles.statLabel}>Rides Taken</Text>
+            </View>
+          </View>
+
+          <View style={styles.menuContainer}>
+            <TouchableOpacity style={styles.menuItem}>
+              <Ionicons name="person-outline" size={24} color="#6366f1" />
+              <Text style={styles.menuText}>Edit Profile</Text>
+              <Ionicons name="chevron-forward" size={24} color="#ffffff" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem}>
+              <Ionicons name="car-outline" size={24} color="#6366f1" />
+              <Text style={styles.menuText}>My Rides</Text>
+              <Ionicons name="chevron-forward" size={24} color="#ffffff" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem}>
+              <Ionicons name="wallet-outline" size={24} color="#6366f1" />
+              <Text style={styles.menuText}>Payment Methods</Text>
+              <Ionicons name="chevron-forward" size={24} color="#ffffff" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem}>
+              <Ionicons name="settings-outline" size={24} color="#6366f1" />
+              <Text style={styles.menuText}>Settings</Text>
+              <Ionicons name="chevron-forward" size={24} color="#ffffff" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.menuItem, styles.logoutButton]}>
+              <Ionicons name="log-out-outline" size={24} color="#ff4444" />
+              <Text style={[styles.menuText, styles.logoutText]}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </LinearGradient>
     </View>
   );
 };
@@ -70,41 +93,96 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#000000',
+  },
+  gradient: {
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  header: {
     alignItems: 'center',
-    padding: 20,
+    paddingTop: 60,
+    paddingBottom: 20,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 20,
+  profileImageContainer: {
+    position: 'relative',
+    marginBottom: 16,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 20,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: '#6366f1',
   },
-  card: {
-    width: '100%',
-    padding: 20,
-    borderWidth: 1,
-    borderRadius: 10,
+  editButton: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#6366f1',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  name: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#ffffff',
+    marginBottom: 4,
+  },
+  email: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.7)',
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 20,
+    marginHorizontal: 20,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     marginBottom: 20,
   },
-  cardText: {
-    fontSize: 16,
-    marginBottom: 10,
+  statItem: {
+    alignItems: 'center',
   },
-  licenseImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
+  statNumber: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#6366f1',
+  },
+  statLabel: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginTop: 4,
+  },
+  menuContainer: {
+    padding: 20,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+  menuText: {
+    flex: 1,
+    marginLeft: 12,
+    fontSize: 16,
+    color: '#ffffff',
+  },
+  logoutButton: {
+    marginTop: 20,
+    backgroundColor: 'rgba(255, 68, 68, 0.1)',
+  },
+  logoutText: {
+    color: '#ff4444',
   },
 });
 
