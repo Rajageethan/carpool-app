@@ -13,8 +13,8 @@ const HomeScreen = ({ navigation }) => {
   const searchRides = async () => {
     const q = query(
       collection(firestore, 'rides'),
-      where('stops', 'array-contains', departure),
-      where('stops', 'array-contains', arrival)
+      where('departure', '==', departure),
+      where('arrival', '==', arrival)
     );
 
     const querySnapshot = await getDocs(q);
