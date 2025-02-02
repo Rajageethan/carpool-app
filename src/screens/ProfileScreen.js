@@ -1,17 +1,20 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, 
   ScrollView, Dimensions, Animated
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { auth, firestore } from '../services/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 const { width, height } = Dimensions.get('window');
 const CARD_WIDTH = (width - 60) / 2;
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
+  const [userData, setUserData] = useState(null);
 
   const profileStats = [
     { icon: 'car-sport-outline', label: 'Rides Offered', count: '15' },
@@ -21,6 +24,19 @@ const ProfileScreen = () => {
   ];
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDoc = await getDoc(doc(firestore, 'users', auth.currentUser.uid));
+        if (userDoc.exists()) {
+          setUserData(userDoc.data());
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -65,8 +81,8 @@ const ProfileScreen = () => {
             )
           )
         ),
-        React.createElement(Text, { style: styles.name }, "Hariharasudhan"),
-        React.createElement(Text, { style: styles.email }, "hariharasudhan2212@gmail.com")
+        React.createElement(Text, { style: styles.name }, userData?.fullName || 'Loading...'),
+        React.createElement(Text, { style: styles.email }, userData?.email || 'Loading...')
       ),
       
       // Stats Grid with white icons
