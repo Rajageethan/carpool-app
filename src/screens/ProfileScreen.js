@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, 
   ScrollView, Dimensions, Animated, SafeAreaView
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { auth, firestore } from '../services/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 const { width, height } = Dimensions.get('window');
 const CARD_WIDTH = (width - 60) / 2;
@@ -12,6 +14,7 @@ const ProfileScreen = ({ navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
+  const [userData, setUserData] = useState(null);
 
   const profileStats = [
     { icon: 'car-sport-outline', label: 'Rides Offered', count: '15' },
@@ -25,6 +28,19 @@ const ProfileScreen = ({ navigation }) => {
   ];
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDoc = await getDoc(doc(firestore, 'users', auth.currentUser.uid));
+        if (userDoc.exists()) {
+          setUserData(userDoc.data());
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -39,51 +55,46 @@ const ProfileScreen = ({ navigation }) => {
     ]).start();
   }, []);
 
-  return React.createElement(
-    SafeAreaView, { style: styles.container },
-    React.createElement(ScrollView, { style: styles.container },
-      React.createElement(View, { style: styles.gradient },
-        // Profile Header with white icon
-        React.createElement(Animated.View, { 
-          style: [styles.header, { opacity: fadeAnim }] 
-        },
-          React.createElement(View, { style: styles.profileSection },
-            React.createElement(View, { style: styles.profileWrapper },
-              React.createElement(View, { style: styles.profileContainer },
-                React.createElement(View, { style: styles.profileImageBorder },
-                  React.createElement(View, { style: styles.profileImage },
-                    React.createElement(Ionicons, { 
-                      name: "person", 
-                      size: 80, 
+  return React.createElement(ScrollView, { style: styles.container },
+    React.createElement(View, { style: styles.gradient },
+      // Profile Header with white icon
+      React.createElement(Animated.View, { 
+        style: [styles.header, { opacity: fadeAnim }] 
+      },
+        React.createElement(View, { style: styles.profileSection },
+          React.createElement(View, { style: styles.profileWrapper },
+            React.createElement(View, { style: styles.profileContainer },
+              React.createElement(View, { style: styles.profileImageBorder },
+                React.createElement(View, { style: styles.profileImage },
+                  React.createElement(Ionicons, { 
+                    name: "person", 
+                    size: 80, 
+                    color: "#ffffff"
+                  })
+                ),
+                React.createElement(TouchableOpacity, { style: styles.cameraIconWrapper },
+                  React.createElement(View, { style: styles.cameraIconBorder },
+                    React.createElement(Ionicons, {
+                      name: "camera",
+                      size: 20,
                       color: "#ffffff"
                     })
-                  ),
-                  React.createElement(TouchableOpacity, { style: styles.cameraIconWrapper },
-                    React.createElement(View, { style: styles.cameraIconBorder },
-                      React.createElement(Ionicons, {
-                        name: "camera",
-                        size: 20,
-                        color: "#ffffff"
-                      })
-                    )
                   )
                 )
               )
             )
-          ),
-          React.createElement(Text, { style: styles.name }, "Hariharasudhan"),
-          React.createElement(Text, { style: styles.email }, "hariharasudhan2212@gmail.com")
+          )
         ),
-        
-        // Stats Grid with white icons
-        React.createElement(Animated.View, {
-          style: [styles.gridContainer, { transform: [{ translateY: slideAnim }] }]
-        }, profileStats.map((stat, index) => 
-          React.createElement(TouchableOpacity, { 
-            key: index,
-            style: styles.statItem,
-            onPress: stat.onPress
-          },
+        React.createElement(Text, { style: styles.name }, "Hariharasudhan"),
+        React.createElement(Text, { style: styles.email }, "hariharasudhan2212@gmail.com")
+      ),
+      
+      // Stats Grid with white icons
+      React.createElement(Animated.View, {
+        style: [styles.gridContainer, { transform: [{ translateY: slideAnim }] }]
+      }, profileStats.map((item, index) => 
+        React.createElement(TouchableOpacity, { key: index },
+          React.createElement(View, { style: styles.card },
             React.createElement(Ionicons, {
               name: stat.icon,
               size: 30,
