@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -24,99 +25,101 @@ const OfferRideScreen = () => {
   });
 
   return (
-    <View style={styles.container}>
-      <LinearGradient
-        colors={['#000000', '#000000']}
-        style={styles.gradient}
-      >
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Offer a Ride</Text>
-            <Text style={styles.subtitle}>Share your journey with others</Text>
-          </View>
-
-          <View style={styles.formContainer}>
-            <View style={styles.inputGroup}>
-              <View style={styles.inputWrapper}>
-                <Ionicons name="location-outline" size={24} color="#6366f1" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="From"
-                  placeholderTextColor="rgba(255, 255, 255, 0.5)"
-                  value={formData.from}
-                  onChangeText={(text) => setFormData({...formData, from: text})}
-                />
-              </View>
-
-              <View style={styles.inputWrapper}>
-                <Ionicons name="location" size={24} color="#6366f1" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="To"
-                  placeholderTextColor="rgba(255, 255, 255, 0.5)"
-                  value={formData.to}
-                  onChangeText={(text) => setFormData({...formData, to: text})}
-                />
-              </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <LinearGradient
+          colors={['#000000', '#000000']}
+          style={styles.gradient}
+        >
+          <ScrollView style={styles.scrollView}>
+            <View style={styles.header}>
+              <Text style={styles.title}>Offer a Ride</Text>
+              <Text style={styles.subtitle}>Share your journey with others</Text>
             </View>
 
-            <View style={styles.row}>
-              <View style={[styles.inputWrapper, styles.halfWidth]}>
-                <Ionicons name="calendar-outline" size={24} color="#6366f1" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Date"
-                  placeholderTextColor="rgba(255, 255, 255, 0.5)"
-                  value={formData.date}
-                  onChangeText={(text) => setFormData({...formData, date: text})}
-                />
+            <View style={styles.formContainer}>
+              <View style={styles.inputGroup}>
+                <View style={styles.inputWrapper}>
+                  <Ionicons name="location-outline" size={24} color="#6366f1" />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="From"
+                    placeholderTextColor="rgba(255, 255, 255, 0.5)"
+                    value={formData.from}
+                    onChangeText={(text) => setFormData({...formData, from: text})}
+                  />
+                </View>
+
+                <View style={styles.inputWrapper}>
+                  <Ionicons name="location" size={24} color="#6366f1" />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="To"
+                    placeholderTextColor="rgba(255, 255, 255, 0.5)"
+                    value={formData.to}
+                    onChangeText={(text) => setFormData({...formData, to: text})}
+                  />
+                </View>
               </View>
 
-              <View style={[styles.inputWrapper, styles.halfWidth]}>
-                <Ionicons name="time-outline" size={24} color="#6366f1" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Time"
-                  placeholderTextColor="rgba(255, 255, 255, 0.5)"
-                  value={formData.time}
-                  onChangeText={(text) => setFormData({...formData, time: text})}
-                />
+              <View style={styles.row}>
+                <View style={[styles.inputWrapper, styles.halfWidth]}>
+                  <Ionicons name="calendar-outline" size={24} color="#6366f1" />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Date"
+                    placeholderTextColor="rgba(255, 255, 255, 0.5)"
+                    value={formData.date}
+                    onChangeText={(text) => setFormData({...formData, date: text})}
+                  />
+                </View>
+
+                <View style={[styles.inputWrapper, styles.halfWidth]}>
+                  <Ionicons name="time-outline" size={24} color="#6366f1" />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Time"
+                    placeholderTextColor="rgba(255, 255, 255, 0.5)"
+                    value={formData.time}
+                    onChangeText={(text) => setFormData({...formData, time: text})}
+                  />
+                </View>
               </View>
+
+              <View style={styles.row}>
+                <View style={[styles.inputWrapper, styles.halfWidth]}>
+                  <Ionicons name="people-outline" size={24} color="#6366f1" />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Available Seats"
+                    placeholderTextColor="rgba(255, 255, 255, 0.5)"
+                    keyboardType="numeric"
+                    value={formData.seats}
+                    onChangeText={(text) => setFormData({...formData, seats: text})}
+                  />
+                </View>
+
+                <View style={[styles.inputWrapper, styles.halfWidth]}>
+                  <Ionicons name="cash-outline" size={24} color="#6366f1" />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Price per Seat"
+                    placeholderTextColor="rgba(255, 255, 255, 0.5)"
+                    keyboardType="numeric"
+                    value={formData.price}
+                    onChangeText={(text) => setFormData({...formData, price: text})}
+                  />
+                </View>
+              </View>
+
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>Publish Ride</Text>
+              </TouchableOpacity>
             </View>
-
-            <View style={styles.row}>
-              <View style={[styles.inputWrapper, styles.halfWidth]}>
-                <Ionicons name="people-outline" size={24} color="#6366f1" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Available Seats"
-                  placeholderTextColor="rgba(255, 255, 255, 0.5)"
-                  keyboardType="numeric"
-                  value={formData.seats}
-                  onChangeText={(text) => setFormData({...formData, seats: text})}
-                />
-              </View>
-
-              <View style={[styles.inputWrapper, styles.halfWidth]}>
-                <Ionicons name="cash-outline" size={24} color="#6366f1" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Price per Seat"
-                  placeholderTextColor="rgba(255, 255, 255, 0.5)"
-                  keyboardType="numeric"
-                  value={formData.price}
-                  onChangeText={(text) => setFormData({...formData, price: text})}
-                />
-              </View>
-            </View>
-
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Publish Ride</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </LinearGradient>
-    </View>
+          </ScrollView>
+        </LinearGradient>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -184,6 +187,10 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 18,
     fontWeight: '600',
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#000000',
   },
 });
 

@@ -8,15 +8,16 @@ import AppNavigator from './src/navigation/AppNavigator';
 
 const MyTheme = {
   ...DefaultTheme,
+  dark: true,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#6200ee',
-    background: '#ffffff',
-    card: '#ffffff',
-    text: '#000000',
-    border: '#cccccc',
+    primary: '#6366f1',
+    background: '#000000',
+    card: '#1a1a1a',
+    text: '#ffffff',
+    border: '#333333',
     notification: '#ff80ab',
-    placeholder: '#aaaaaa',
+    placeholder: '#666666',
   },
 };
 
