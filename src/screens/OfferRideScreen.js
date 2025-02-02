@@ -26,7 +26,7 @@ const OfferRideScreen = () => {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#000000', '#1a1a1a']}
+        colors={['#000000', '#000000']}
         style={styles.gradient}
       >
         <ScrollView style={styles.scrollView}>

@@ -15,7 +15,8 @@ import RideDetailsScreen from '../screens/RideDetailsScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const MainStack = () => (
+// Tab Navigator
+const TabNavigator = () => (
   <Tab.Navigator
     screenOptions={{
       headerShown: false,
@@ -62,6 +63,7 @@ const MainStack = () => (
   </Tab.Navigator>
 );
 
+// Root Stack Navigator
 const AppNavigator = () => (
   <Stack.Navigator 
     initialRouteName="Landing"
@@ -70,7 +72,7 @@ const AppNavigator = () => (
     <Stack.Screen name="Landing" component={LandingScreen} />
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />
-    <Stack.Screen name="MainApp" component={MainStack} />
+    <Stack.Screen name="MainApp" component={TabNavigator} />
     <Stack.Screen name="RideDetails" component={RideDetailsScreen} />
   </Stack.Navigator>
 );
