@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, 
-  ScrollView, Dimensions, Animated
+  ScrollView, Dimensions, Animated, SafeAreaView
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 const CARD_WIDTH = (width - 60) / 2;
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
@@ -17,7 +17,11 @@ const ProfileScreen = () => {
     { icon: 'car-sport-outline', label: 'Rides Offered', count: '15' },
     { icon: 'car-outline', label: 'Rides Taken', count: '23' },
     { icon: 'wallet-outline', label: 'Wallet', count: '$250' },
-    { icon: 'settings-outline', label: 'Settings' },
+    { 
+      icon: 'settings-outline', 
+      label: 'Settings',
+      onPress: () => navigation.navigate('Settings') // Updated navigation path
+    }
   ];
 
   useEffect(() => {
@@ -35,88 +39,98 @@ const ProfileScreen = () => {
     ]).start();
   }, []);
 
-  return React.createElement(ScrollView, { style: styles.container },
-    React.createElement(View, { style: styles.gradient },
-      // Profile Header with white icon
-      React.createElement(Animated.View, { 
-        style: [styles.header, { opacity: fadeAnim }] 
-      },
-        React.createElement(View, { style: styles.profileSection },
-          React.createElement(View, { style: styles.profileWrapper },
-            React.createElement(View, { style: styles.profileContainer },
-              React.createElement(View, { style: styles.profileImageBorder },
-                React.createElement(View, { style: styles.profileImage },
-                  React.createElement(Ionicons, { 
-                    name: "person", 
-                    size: 80, 
-                    color: "#ffffff"
-                  })
-                ),
-                React.createElement(TouchableOpacity, { style: styles.cameraIconWrapper },
-                  React.createElement(View, { style: styles.cameraIconBorder },
-                    React.createElement(Ionicons, {
-                      name: "camera",
-                      size: 20,
+  return React.createElement(
+    SafeAreaView, { style: styles.container },
+    React.createElement(ScrollView, { style: styles.container },
+      React.createElement(View, { style: styles.gradient },
+        // Profile Header with white icon
+        React.createElement(Animated.View, { 
+          style: [styles.header, { opacity: fadeAnim }] 
+        },
+          React.createElement(View, { style: styles.profileSection },
+            React.createElement(View, { style: styles.profileWrapper },
+              React.createElement(View, { style: styles.profileContainer },
+                React.createElement(View, { style: styles.profileImageBorder },
+                  React.createElement(View, { style: styles.profileImage },
+                    React.createElement(Ionicons, { 
+                      name: "person", 
+                      size: 80, 
                       color: "#ffffff"
                     })
+                  ),
+                  React.createElement(TouchableOpacity, { style: styles.cameraIconWrapper },
+                    React.createElement(View, { style: styles.cameraIconBorder },
+                      React.createElement(Ionicons, {
+                        name: "camera",
+                        size: 20,
+                        color: "#ffffff"
+                      })
+                    )
                   )
                 )
               )
             )
-          )
+          ),
+          React.createElement(Text, { style: styles.name }, "Hariharasudhan"),
+          React.createElement(Text, { style: styles.email }, "hariharasudhan2212@gmail.com")
         ),
-        React.createElement(Text, { style: styles.name }, "Hariharasudhan"),
-        React.createElement(Text, { style: styles.email }, "hariharasudhan2212@gmail.com")
-      ),
-      
-      // Stats Grid with white icons
-      React.createElement(Animated.View, {
-        style: [styles.gridContainer, { transform: [{ translateY: slideAnim }] }]
-      }, profileStats.map((item, index) => 
-        React.createElement(TouchableOpacity, { key: index },
-          React.createElement(View, { style: styles.card },
+        
+        // Stats Grid with white icons
+        React.createElement(Animated.View, {
+          style: [styles.gridContainer, { transform: [{ translateY: slideAnim }] }]
+        }, profileStats.map((stat, index) => 
+          React.createElement(TouchableOpacity, { 
+            key: index,
+            style: styles.statItem,
+            onPress: stat.onPress
+          },
             React.createElement(Ionicons, {
-              name: item.icon,
-              size: 28,
+              name: stat.icon,
+              size: 30,
               color: "#ffffff"  // Changed to white
             }),
-            item.count && React.createElement(Text, { 
-              style: styles.cardCount 
-            }, item.count),
+            stat.count && React.createElement(Text, { 
+              style: styles.statCount 
+            }, stat.count),
             React.createElement(Text, { 
-              style: styles.cardLabel 
-            }, item.label)
+              style: styles.statLabel 
+            }, stat.label)
           )
-        )
-      )),
+        )),
 
-      // License Card
-      React.createElement(View, { style: styles.licenseCard },
-        React.createElement(Text, { 
-          style: styles.licenseTitle 
-        }, "Driver's License"),
-        React.createElement(View, { style: styles.licenseDetails },
+        // License Card
+        React.createElement(View, { style: styles.licenseCard },
           React.createElement(Text, { 
-            style: styles.licenseText 
-          }, "DL: XXXXX-XXXXX-XXXXX"),
-          React.createElement(Text, { 
-            style: styles.licenseText 
-          }, "Valid till: 12/2025")
-        )
-      ),
+            style: styles.licenseTitle 
+          }, "Driver's License"),
+          React.createElement(View, { style: styles.licenseDetails },
+            React.createElement(Text, { 
+              style: styles.licenseText 
+            }, "DL: XXXXX-XXXXX-XXXXX"),
+            React.createElement(Text, { 
+              style: styles.licenseText 
+            }, "Valid till: 12/2025")
+          )
+        ),
 
-      // Logout Button with red background
-      React.createElement(TouchableOpacity, { style: styles.logoutButton },
-        React.createElement(View, { style: styles.logoutContent },
-          React.createElement(Ionicons, {
-            name: "log-out-outline",
-            size: 24,
-            color: "rgb(255, 4, 4)"  // Changed to white
-          }),
-          React.createElement(Text, { 
-            style: styles.logoutText 
-          }, "Logout")
-        )
+        // Logout Button with red background
+        React.createElement(TouchableOpacity, { style: styles.logoutButton },
+          React.createElement(View, { style: styles.logoutContent },
+            React.createElement(Ionicons, {
+              name: "log-out-outline",
+              size: 24,
+              color: "rgb(255, 4, 4)"  // Changed to white
+            }),
+            React.createElement(Text, { 
+              style: styles.logoutText 
+            }, "Logout")
+          )
+        ),
+
+        // Settings Button
+        
+          
+         
       )
     )
   );
@@ -268,6 +282,43 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: 'rgb(255, 0, 0)',  // Changed to white
+  },
+  settingsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    marginHorizontal: 20,
+    marginTop: 10,
+  },
+  settingsText: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: '#333',
+  },
+  statItem: {
+    width: CARD_WIDTH,
+    height: CARD_WIDTH,
+    borderRadius: 20,
+    padding: 15,
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(25, 25, 25, 0.5)', // Darker overlay
+    borderWidth: 1,
+    borderColor: '#1a1a1a',
+  },
+  statCount: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#ffffff',
+    marginTop: 10,
+  },
+  statLabel: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.7)',
+    marginTop: 5,
   },
 });
 
